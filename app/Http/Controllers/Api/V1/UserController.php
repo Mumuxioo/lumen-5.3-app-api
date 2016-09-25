@@ -100,7 +100,7 @@ class UserController extends BaseController
      */
     public function getUserInfo()
     {
-        return $this->response->item($this->user(), new UserTransformer());
+        return ApiHelper::toSuccess($this->user());
     }
 
     /**
@@ -109,38 +109,69 @@ class UserController extends BaseController
      * @apiGroup user
      * @apiPermission JWT
      * @apiVersion 0.1.0
-     * @apiParam {String} [name] name
-     * @apiParam {Url} [avatar] avatar
+     * @apiParam {String} [user_name] user_name
+     * @apiParam {String} [user_nickname] user_nickname
+     * @apiParam {String} [user_phone] user_phone
+     * @apiParam {String} [user_address] user_address
+     * @apiParam {int} [user_profession_type] user_profession_type 职业
+     * @apiParam {int} [user_sex] user_sex
      * @apiSuccessExample {json} Success-Response:
      *     HTTP/1.1 200 OK
-     *     {
-     *        "id": 2,
-     *        "email": 'liyu01989@gmail.com',
-     *        "name": "ffff",
-     *        "created_at": "2015-10-28 07:30:56",
-     *        "updated_at": "2015-10-28 09:42:43",
-     *        "deleted_at": null,
-     *     }
+            {
+                "status": "success",
+                "status_code": 200,
+                "message": "",
+                "data": {
+                    "user_id": 7,
+                    "user_name": "tony1",
+                    "user_nickname": "",
+                    "user_sex": "1",
+                    "user_phone": "",
+                    "user_address": null,
+                    "user_profession_type": null,
+                    "user_fans_num": null,
+                    "user_focus_num": 0,
+                    "user_blacklist_num": 0,
+                    "user_credits_num": 0,
+                    "user_charm_num": 0,
+                    "user_charm_ranking": 0,
+                    "user_credits_ranking": 0,
+                    "last_time": null,
+                    "created_at": "2016-09-24 09:54:26",
+                    "updated_at": "2016-09-25 18:24:16",
+                    "deleted_at": null
+                }
+            }
      */
     public function patch(Request $request)
     {
+
         $validator = \Validator::make($request->input(), [
-            'name' => 'string|max:50',
-            'avatar' => 'url',
+            'user_nickname' => 'string|max:50',
         ]);
 
         if ($validator->fails()) {
-            return $this->errorBadRequest($validator->messages());
+            return ApiHelper::toError($validator->messages());
         }
+
 
         $user = $this->user();
-        $attributes = array_filter($request->only('name', 'avatar'));
+        $only = [
+            'user_name',
+            'user_nickname',
+            'user_sex',
+            'user_address',
+            'user_profession_type',
+        ];
+
+        $attributes = array_filter($request->only($only));
 
         if ($attributes) {
-            $user = $this->userRepository->update($user->id, $attributes);
+            $user = $this->userRepository->update($user->user_id, $attributes);
         }
 
-        return $this->response->item($user, new UserTransformer());
+        //return $this->response->item($user, new UserTransformer());
+        return ApiHelper::toJson($user);
     }
 
 

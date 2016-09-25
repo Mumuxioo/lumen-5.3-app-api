@@ -17,6 +17,8 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
+    'timezone' => 'Asia/Shanghai',
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

@@ -12,7 +12,7 @@ class ApiHelper
      * @param int $code 响应状态码
      * @return \Illuminate\Http\JsonResponse josn数据
      */
-    static public function toJson($data, $message = '', $status = 'success', $code = 200)
+    static public function toJson($data, $message = '操作成功', $status = 'success', $code = 200)
     {
         return response()->json([
             'status' => $status,

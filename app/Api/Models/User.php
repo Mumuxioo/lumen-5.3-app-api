@@ -18,6 +18,7 @@ class User extends BaseModel implements AuthenticatableContract, JWTSubject
     // 查询用户的时候，不暴露密码
     protected $hidden = ['password','is_online','token'];
 
+
     public function posts()
     {
         return $this->hasMany('Api\Models\Post');

@@ -2,6 +2,8 @@
 
 namespace Api\Repositories\Eloquent;
 
+use Carbon\Carbon;
+
 abstract class BaseRepository
 {
     protected $model;

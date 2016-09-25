@@ -622,15 +622,43 @@
             "group": "Parameter",
             "type": "String",
             "optional": true,
-            "field": "name",
-            "description": "<p>name</p>"
+            "field": "user_name",
+            "description": "<p>user_name</p>"
           },
           {
             "group": "Parameter",
-            "type": "Url",
+            "type": "String",
             "optional": true,
-            "field": "avatar",
-            "description": "<p>avatar</p>"
+            "field": "user_nickname",
+            "description": "<p>user_nickname</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "user_phone",
+            "description": "<p>user_phone</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": true,
+            "field": "user_address",
+            "description": "<p>user_address</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": true,
+            "field": "user_profession_type",
+            "description": "<p>user_profession_type 职业</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "int",
+            "optional": true,
+            "field": "user_sex",
+            "description": "<p>user_sex</p>"
           }
         ]
       }
@@ -639,7 +667,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n   \"id\": 2,\n   \"email\": 'liyu01989@gmail.com',\n   \"name\": \"ffff\",\n   \"created_at\": \"2015-10-28 07:30:56\",\n   \"updated_at\": \"2015-10-28 09:42:43\",\n   \"deleted_at\": null,\n}",
+          "content": "HTTP/1.1 200 OK\n        {\n            \"status\": \"success\",\n            \"status_code\": 200,\n            \"message\": \"\",\n            \"data\": {\n                \"user_id\": 7,\n                \"user_name\": \"tony1\",\n                \"user_nickname\": \"\",\n                \"user_sex\": \"1\",\n                \"user_phone\": \"\",\n                \"user_address\": null,\n                \"user_profession_type\": null,\n                \"user_fans_num\": null,\n                \"user_focus_num\": 0,\n                \"user_blacklist_num\": 0,\n                \"user_credits_num\": 0,\n                \"user_charm_num\": 0,\n                \"user_charm_ranking\": 0,\n                \"user_credits_ranking\": 0,\n                \"last_time\": null,\n                \"created_at\": \"2016-09-24 09:54:26\",\n                \"updated_at\": \"2016-09-25 18:24:16\",\n                \"deleted_at\": null\n            }\n        }",
           "type": "json"
         }
       ]
