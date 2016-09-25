@@ -57,23 +57,11 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers\Api\V1'], function ($a
             'uses' => 'UserController@editPassword',
         ]);
 
-        // User
-        // user list
-        $api->get('users', [
-            'as' => 'users.index',
-            'uses' => 'UserController@index',
-        ]);
-        // user detail
-        $api->get('users/{id}', [
-            'as' => 'users.show',
-            'uses' => 'UserController@show',
-        ]);
-
         // USER
         // my detail
         $api->get('user', [
             'as' => 'user.show',
-            'uses' => 'UserController@userShow',
+            'uses' => 'UserController@getUserInfo',
         ]);
 
         // update part of me

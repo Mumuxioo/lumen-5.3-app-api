@@ -44,7 +44,7 @@ abstract class BaseRepository
 
     public function update($id, array $attributes)
     {
-        // 感觉不太对
+
         $model = $this->model->find($id);
         $model->fill($attributes)->save();
 

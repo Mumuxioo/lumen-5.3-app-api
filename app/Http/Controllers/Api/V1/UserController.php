@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\V1;
 use Api\Transformers\UserTransformer;
 use Api\Repositories\Contracts\UserRepositoryContract;
 use Illuminate\Http\Request;
+use  App\Http\ApiHelper;
 
 class UserController extends BaseController
 {
@@ -13,43 +14,6 @@ class UserController extends BaseController
         $this->userRepository = $userRepository;
     }
 
-    /**
-     * @api {get} /users 用户列表(user list)
-     * @apiDescription 用户列表(user list)
-     * @apiGroup user
-     * @apiPermission none
-     * @apiVersion 0.1.0
-     * @apiSuccessExample {json} Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "data": [
-     *         {
-     *           "id": 2,
-     *           "email": "490554191@qq.com",
-     *           "name": "fff",
-     *           "created_at": "2015-11-12 10:37:14",
-     *           "updated_at": "2015-11-13 02:26:36",
-     *           "deleted_at": null
-     *         }
-     *       ],
-     *       "meta": {
-     *         "pagination": {
-     *           "total": 1,
-     *           "count": 1,
-     *           "per_page": 15,
-     *           "current_page": 1,
-     *           "total_pages": 1,
-     *           "links": []
-     *         }
-     *       }
-     *     }
-     */
-    public function index(UserTransformer $userTransformer)
-    {
-        $users = $this->userRepository->paginate();
-
-        return $this->response->paginator($users, $userTransformer);
-    }
 
     /**
      * @api {put} /user/password 修改密码(edit password)
@@ -83,10 +47,18 @@ class UserController extends BaseController
             'old_password' => 'required',
             'password' => 'required|confirmed|different:old_password',
             'password_confirmation' => 'required|same:password',
+        ],[
+            'old_password.required' => '请输入密码',
+            'password.required' => '请输入密码',
+            'password_confirmation.required' => '请输入密码',
+            'password.confirmed' => '两次密码不一致',
+            'password.different' => '旧密码和新密码不能相同',
+            'password_confirmation.same' => '两次密码不一致',
+
         ]);
 
         if ($validator->fails()) {
-            return $this->errorBadRequest($validator->messages());
+            return  ApiHelper::toError($validator->messages());
         }
 
         $user = $this->user();
@@ -96,45 +68,16 @@ class UserController extends BaseController
             'password' => $request->get('old_password'),
         ]);
 
-        if (! $auth) {
-            return $this->response->errorUnauthorized();
+        if (!$auth) {
+            return ApiHelper::toError('旧密码错误', 'error',401);
         }
 
         $password = app('hash')->make($request->get('password'));
-        $this->userRepository->update($user->id, ['password' => $password]);
+        $this->userRepository->update($user->user_id, ['password' => $password]);
 
-        return $this->response->noContent();
+        return ApiHelper::toJson('修改成功');
     }
 
-    /**
-     * @api {get} /users/{id} 某个用户信息(some user's info)
-     * @apiDescription 某个用户信息(some user's info)
-     * @apiGroup user
-     * @apiPermission none
-     * @apiVersion 0.1.0
-     * @apiSuccessExample {json} Success-Response:
-     *     HTTP/1.1 200 OK
-     *     {
-     *       "data": {
-     *         "id": 2,
-     *         "email": "490554191@qq.com",
-     *         "name": "fff",
-     *         "created_at": "2015-11-12 10:37:14",
-     *         "updated_at": "2015-11-13 02:26:36",
-     *         "deleted_at": null
-     *       }
-     *     }
-     */
-    public function show($id)
-    {
-        $user = $this->userRepository->find($id);
-
-        if (! $user) {
-            return $this->response->errorNotFound();
-        }
-
-        return $this->response->item($user, new UserTransformer());
-    }
 
     /**
      * @api {get} /user 当前用户信息(current user info)
@@ -155,7 +98,7 @@ class UserController extends BaseController
      *       }
      *     }
      */
-    public function userShow()
+    public function getUserInfo()
     {
         return $this->response->item($this->user(), new UserTransformer());
     }
@@ -201,30 +144,30 @@ class UserController extends BaseController
     }
 
 
-    public function store(Request $request)
-    {
-        $validator = \Validator::make($request->input(), [
-            'email' => 'required|email|unique:users',
-            'password' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->errorBadRequest($validator->messages());
-        }
-
-        $email = $request->get('email');
-        $password = $request->get('password');
-
-        $attributes = [
-            'email' => $email,
-            'password' => app('hash')->make($password),
-        ];
-
-        $user = $this->userRepository->create($attributes);
-
-        // 用户注册事件
-        $token = $this->auth->fromUser($user);
-
-        return $this->response->array(compact('token'));
-    }
+//    public function store(Request $request)
+//    {
+//        $validator = \Validator::make($request->input(), [
+//            'email' => 'required|email|unique:users',
+//            'password' => 'required',
+//        ]);
+//
+//        if ($validator->fails()) {
+//            return $this->errorBadRequest($validator->messages());
+//        }
+//
+//        $email = $request->get('email');
+//        $password = $request->get('password');
+//
+//        $attributes = [
+//            'email' => $email,
+//            'password' => app('hash')->make($password),
+//        ];
+//
+//        $user = $this->userRepository->create($attributes);
+//
+//        // 用户注册事件
+//        $token = $this->auth->fromUser($user);
+//
+//        return $this->response->array(compact('token'));
+//    }
 }

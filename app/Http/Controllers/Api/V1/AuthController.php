@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use Api\Models\PhoneCode;
 use Api\Repositories\Contracts\UserRepositoryContract;
 use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
@@ -84,7 +85,9 @@ class AuthController extends BaseController
         }catch (JWTException $e) {
             return ApiHelper::toError('token创建失败');
         }
-
+//        $phone = $request->get('user_phone');
+//        $user = $this->userRepository->where(['user_phone'=>$phone])->first();
+//        dd($user);
         return ApiHelper::toJson(compact('token'),'登陆成功');
     }
 
@@ -119,25 +122,33 @@ class AuthController extends BaseController
 
 
     /**
-     * @api {post} /register 注册(register)
-     * @apiDescription 注册(register)
+     * @api {post} /user/sendSMS 发送手机验证码(sendSMS)
+     * @apiDescription 手机验证码(sendSMS)
      * @apiGroup Auth
      * @apiPermission none
      * @apiVersion 0.1.0
-     * @apiParam {Phone}  phone   phone[unique]
-     * @apiParam {String} password   password
+     * @apiParam {user_phone}  user_phone   user_phone
+     *
      * @apiSuccessExample {json} Success-Response:
      *     HTTP/1.1 200 OK
      *     {
-     *         token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL21vYmlsZS5kZWZhcmEuY29tXC9hdXRoXC90b2tlbiIsImlhdCI6IjE0NDU0MjY0MTAiLCJleHAiOiIxNDQ1NjQyNDIxIiwibmJmIjoiMTQ0NTQyNjQyMSIsImp0aSI6Ijk3OTRjMTljYTk1NTdkNDQyYzBiMzk0ZjI2N2QzMTMxIn0.9UPMTxo3_PudxTWldsf4ag0PHq1rK8yO9e5vqdwRZLY
-     *     }
+     *         "status": "success",
+     *          "status_code": 200,
+     *          "message": "发送成功",
+     *          "data": "316954"
+     *      }
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 403 Bad Request
-     *     {
-     *         "phone": [
-     *             "该手机号码已注册"
-     *         ],
-     *     }
+     *    {
+     *      "status": "error",
+     *      "status_code": 403,
+     *      "message": {
+     *          "user_phone": [
+     *              "手机号不能为空"
+     *          ]
+     *      },
+     *      "data": ""
+     *   }
      */
     public function sendSMS(Request $request)
     {
@@ -168,11 +179,23 @@ class AuthController extends BaseController
 
         $result = $sendTemplateSMS->sendTemplateSMS($phone, array($code, 5), 1);
         if($result == NULL ) {
-            return ApiHelper::toError($result,"result error");
+            return ApiHelper::toError("短信验证码发送失败");
         }
         if($result->statusCode != 0) {
-            return ApiHelper::toError($result,"code error");
+            return ApiHelper::toError($result->statusMsg);
         }else{
+
+            $tempPhone = PhoneCode::where('phone', $phone)->first();
+
+            if($tempPhone == null) {
+                $tempPhone = new PhoneCode;
+            }
+
+            $tempPhone->phone = $phone;
+            $tempPhone->code = $code;
+            $tempPhone->deadline = date('Y-m-d H-i-s', time() + 5*60);
+            $tempPhone->save();
+
             return ApiHelper::toJson($code,"发送成功");
         }
 
@@ -182,25 +205,37 @@ class AuthController extends BaseController
 
 
     /**
-     * @api {post} /register 注册(register)
+     * @api {post} /user/register 注册(register)
      * @apiDescription 注册(register)
      * @apiGroup Auth
      * @apiPermission none
      * @apiVersion 0.1.0
      * @apiParam {Phone}  phone   phone[unique]
      * @apiParam {String} password   password
+     * @apiParam {String} phone_code   phone_code 验证码
+     *
      * @apiSuccessExample {json} Success-Response:
      *     HTTP/1.1 200 OK
      *     {
-     *         token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL21vYmlsZS5kZWZhcmEuY29tXC9hdXRoXC90b2tlbiIsImlhdCI6IjE0NDU0MjY0MTAiLCJleHAiOiIxNDQ1NjQyNDIxIiwibmJmIjoiMTQ0NTQyNjQyMSIsImp0aSI6Ijk3OTRjMTljYTk1NTdkNDQyYzBiMzk0ZjI2N2QzMTMxIn0.9UPMTxo3_PudxTWldsf4ag0PHq1rK8yO9e5vqdwRZLY
-     *     }
+     *         "status": "success",
+     *          "status_code": 200,
+     *          "message": "注册成功",
+     *          "data": {
+     *              "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL21vYmlsZS5kZWZhcmEuY29tXC9hdXRoXC90b2tlbiIsImlhdCI6IjE0NDU0MjY0MTAiLCJleHAiOiIxNDQ1NjQyNDIxIiwibmJmIjoiMTQ0NTQyNjQyMSIsImp0aSI6Ijk3OTRjMTljYTk1NTdkNDQyYzBiMzk0ZjI2N2QzMTMxIn0.9UPMTxo3_PudxTWldsf4ag0PHq1rK8yO9e5vqdwRZLY"
+     *          }
+     *      }
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 403 Bad Request
-     *     {
-     *         "phone": [
-     *             "该手机号码已注册"
-     *         ],
-     *     }
+     *    {
+     *      "status": "error",
+     *      "status_code": 403,
+     *      "message": {
+     *          "user_phone": [
+     *          "手机号已注册"
+     *          ]
+     *      },
+     *      "data": ""
+     *   }
      */
     public function register(Request $request)
     {
@@ -209,6 +244,7 @@ class AuthController extends BaseController
         $rules = [
             'user_phone' => 'required|unique:users|regex:/^1[34578][0-9]{9}$/',
             'password' => 'required',
+            'phone_code' => 'required|min:6',
         ];
 
         $message = [
@@ -216,6 +252,8 @@ class AuthController extends BaseController
             'user_phone.unique' => '手机号已注册',
             'user_phone.regex' => '手机号格式不正确',
             'password.required' => '请填写登陆密码',
+            'phone_code.required' => '请填写验证码',
+            'phone_code.min' => '手机验证码为6位',
         ];
 
         $validator = Validator::make($request->all(),$rules,$message);
@@ -226,18 +264,35 @@ class AuthController extends BaseController
 
         $phone = $request->get('user_phone');
         $password = $request->get('password');
+        $phone_code = $request->get('phone_code');
 
-        $attributes = [
-            'user_phone' => $phone,
-            'user_nickname' => $phone,
-            'password' => app('hash')->make($password),
-        ];
+        $tempPhone = PhoneCode::where('phone', $phone)->first();
 
-        $user = $this->userRepository->create($attributes);
+        if($tempPhone == null){
+            return ApiHelper::toError('请发送验证码');
+        }
+        if($tempPhone->code == $phone_code) {
 
-        // 用户注册事件
-        $token = $this->auth->fromUser($user);
+            if(time() > strtotime($tempPhone->deadline)) {
+                return ApiHelper::toError('手机验证码不正确');
+            }
 
-        return ApiHelper::toJson(compact('token'),'注册成功');
+            $attributes = [
+                'user_phone' => $phone,
+                'user_nickname' => $phone,
+                'password' => app('hash')->make($password),
+            ];
+
+            $user = $this->userRepository->create($attributes);
+
+            // 用户注册事件
+            $token = $this->auth->fromUser($user);
+
+            return ApiHelper::toJson(compact('token'),'注册成功');
+        }
+
+        return ApiHelper::toError('手机验证码不正确');
+
+
     }
 }
