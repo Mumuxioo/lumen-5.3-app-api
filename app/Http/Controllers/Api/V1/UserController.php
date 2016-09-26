@@ -47,7 +47,7 @@ class UserController extends BaseController
             'old_password' => 'required',
             'password' => 'required|confirmed|different:old_password',
             'password_confirmation' => 'required|same:password',
-        ],[
+        ], [
             'old_password.required' => '请输入密码',
             'password.required' => '请输入密码',
             'password_confirmation.required' => '请输入密码',
@@ -58,7 +58,7 @@ class UserController extends BaseController
         ]);
 
         if ($validator->fails()) {
-            return  ApiHelper::toError($validator->messages());
+            return ApiHelper::toError($validator->messages());
         }
 
         $user = $this->user();
@@ -69,7 +69,7 @@ class UserController extends BaseController
         ]);
 
         if (!$auth) {
-            return ApiHelper::toError('旧密码错误', 'error',401);
+            return ApiHelper::toError('旧密码错误', 'error', 401);
         }
 
         $password = app('hash')->make($request->get('password'));
@@ -117,31 +117,31 @@ class UserController extends BaseController
      * @apiParam {int} [user_sex] user_sex
      * @apiSuccessExample {json} Success-Response:
      *     HTTP/1.1 200 OK
-            {
-                "status": "success",
-                "status_code": 200,
-                "message": "",
-                "data": {
-                    "user_id": 7,
-                    "user_name": "tony1",
-                    "user_nickname": "",
-                    "user_sex": "1",
-                    "user_phone": "",
-                    "user_address": null,
-                    "user_profession_type": null,
-                    "user_fans_num": null,
-                    "user_focus_num": 0,
-                    "user_blacklist_num": 0,
-                    "user_credits_num": 0,
-                    "user_charm_num": 0,
-                    "user_charm_ranking": 0,
-                    "user_credits_ranking": 0,
-                    "last_time": null,
-                    "created_at": "2016-09-24 09:54:26",
-                    "updated_at": "2016-09-25 18:24:16",
-                    "deleted_at": null
-                }
-            }
+     * {
+     * "status": "success",
+     * "status_code": 200,
+     * "message": "",
+     * "data": {
+     * "user_id": 7,
+     * "user_name": "tony1",
+     * "user_nickname": "",
+     * "user_sex": "1",
+     * "user_phone": "",
+     * "user_address": null,
+     * "user_profession_type": null,
+     * "user_fans_num": null,
+     * "user_focus_num": 0,
+     * "user_blacklist_num": 0,
+     * "user_credits_num": 0,
+     * "user_charm_num": 0,
+     * "user_charm_ranking": 0,
+     * "user_credits_ranking": 0,
+     * "last_time": null,
+     * "created_at": "2016-09-24 09:54:26",
+     * "updated_at": "2016-09-25 18:24:16",
+     * "deleted_at": null
+     * }
+     * }
      */
     public function patch(Request $request)
     {
@@ -175,30 +175,82 @@ class UserController extends BaseController
     }
 
 
-//    public function store(Request $request)
-//    {
-//        $validator = \Validator::make($request->input(), [
-//            'email' => 'required|email|unique:users',
-//            'password' => 'required',
-//        ]);
-//
-//        if ($validator->fails()) {
-//            return $this->errorBadRequest($validator->messages());
-//        }
-//
-//        $email = $request->get('email');
-//        $password = $request->get('password');
-//
-//        $attributes = [
-//            'email' => $email,
-//            'password' => app('hash')->make($password),
-//        ];
-//
-//        $user = $this->userRepository->create($attributes);
-//
-//        // 用户注册事件
-//        $token = $this->auth->fromUser($user);
-//
-//        return $this->response->array(compact('token'));
-//    }
+    /**
+     * @api {post} /user/avatar 修改个人头像(upload my avatar)
+     * @apiDescription 修改个人头像(upload my avatar)
+     * @apiGroup user
+     * @apiPermission JWT
+     * @apiVersion 0.1.0
+     * @apiParam {file} [avatar] 头像图片文件
+     *
+     * @apiSuccessExample {json} Success-Response:
+     *     HTTP/1.1 200 OK
+     * {
+     *  "status": "success",
+     *  "status_code": 200,
+     *  "message": "上传头像成功",
+     *  "data": {
+     *  "avatar_url": "uploads/avatar/2016-09-267bb5938e78cc8b6cd438be83cc8d78d1.jpg"
+     *  }
+     * }
+     * @apiErrorExample {json} Error-Response:
+     *     HTTP/1.1 403 Bad Request
+     *    {
+     *      "status": "error",
+     *      "status_code": 403,
+     *      "message": {
+     *          "上传图片不存在"
+     *      }
+     *   }
+     */
+    public function imgUpload(Request $request)
+    {
+
+        $file = $request->file('user_avatar');
+
+        if (!$request->hasFile('user_avatar')) {
+            return ApiHelper::toError('上传图片不存在');
+        }
+
+        if (!$request->file('user_avatar')->isValid()) {
+            return ApiHelper::toError('图片上传图片失败');
+        }
+
+        $clientName = $file->getClientOriginalName();
+
+        $tmpName = $file->getFileName();
+
+        $realPath = $file->getRealPath();
+
+        $extension = $file->getClientOriginalExtension();
+
+        $mimeTye = $file->getMimeType();
+
+        $newName = md5(date('ymdhis') . $clientName) . "." . $extension;
+
+        $allowed_extensions = ["png", "jpg", "gif"];
+
+        $filePath = "uploads/avatar/" . date('Y-m-d', time());//这里是用户最终裁切好的头像存放目录，当然你可以按年月日目录结构来存放
+
+        if (!file_exists($filePath)) {
+            mkdir($filePath, 0777, true);
+        }
+
+        if ($extension && !in_array($extension, $allowed_extensions)) {
+            return ApiHelper::toError('只能上传png、 jpg 、 gif类型图片');
+        }
+
+        $path = $file->move($filePath, $newName); //这里是缓存文件夹，存放的是用户上传的原图，这里要返回原图地址给flash做裁切用
+
+        $data['user_avatar'] = $filePath . $newName;
+
+        $user = $this->user();
+
+        $user = $this->userRepository->update($user->user_id, $data);
+
+        return ApiHelper::toJson($data, '上传头像成功');
+
+    }
+
+
 }

@@ -48,6 +48,8 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers\Api\V1'], function ($a
         'uses' => 'AuthController@refreshToken',
     ]);
 
+
+
     // need authentication
     $api->group(['middleware' => 'jwt.auth'], function ($api) {
 
@@ -68,6 +70,12 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers\Api\V1'], function ($a
         $api->patch('user', [
             'as' => 'user.update',
             'uses' => 'UserController@patch',
+        ]);
+
+        // update avatar of me
+        $api->post('user/avatar', [
+            'as' => 'user.avatar',
+            'uses' => 'UserController@imgUpload',
         ]);
 
 
