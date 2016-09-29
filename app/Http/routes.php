@@ -49,7 +49,6 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers\Api\V1'], function ($a
     ]);
 
 
-
     // need authentication
     $api->group(['middleware' => 'jwt.auth'], function ($api) {
 
@@ -72,38 +71,47 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers\Api\V1'], function ($a
             'uses' => 'UserController@patch',
         ]);
 
-        // update avatar of me
+        // update avatar of me 头像
         $api->post('user/avatar', [
             'as' => 'user.avatar',
             'uses' => 'UserController@imgUpload',
         ]);
 
 
-        // POST
-        // user's posts index
-        $api->get('user/posts', [
-            'as' => 'user.posts.index',
-            'uses' => 'PostController@userIndex',
+        //TASK COMMENT
+        // task index
+        $api->get('tasks', [
+            'as' => 'tasks.index',
+            'uses' => 'TaskController@index',
         ]);
-        // create a post
-        $api->post('posts', [
-            'as' => 'posts.store',
-            'uses' => 'PostController@store',
+
+        // user's task
+        $api->get('user/tasks', [
+            'as' => 'tasks.myTask',
+            'uses' => 'TaskController@myTask',
         ]);
-        // update a post
-        $api->put('posts/{id}', [
-            'as' => 'posts.update',
-            'uses' => 'PostController@update',
+
+        // user's task
+        $api->get('task/detail/{id}', [
+            'as' => 'tasks.detail',
+            'uses' => 'TaskController@detail',
         ]);
+
+        // create a task
+        $api->post('tasks', [
+            'as' => 'tasks.store',
+            'uses' => 'TaskController@store',
+        ]);
+
         // update part of a post
-        $api->patch('posts/{id}', [
-            'as' => 'posts.update',
-            'uses' => 'PostController@update',
+        $api->patch('tasks/{id}', [
+            'as' => 'tasks.update',
+            'uses' => 'TaskController@update',
         ]);
         // delete a post
-        $api->delete('posts/{id}', [
-            'as' => 'posts.destroy',
-            'uses' => 'PostController@destroy',
+        $api->delete('tasks/{id}', [
+            'as' => 'tasks.destroy',
+            'uses' => 'TaskController@destroy',
         ]);
 
         // POST COMMENT

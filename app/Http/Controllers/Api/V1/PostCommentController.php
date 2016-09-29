@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use Api\Transformers\PostCommentTransformer;
-use Api\Repositories\Contracts\PostRepositoryContract;
+use Api\Repositories\Contracts\TaskRepositoryContract;
 use Api\Repositories\Contracts\PostCommentRepositoryContract;
 use Illuminate\Http\Request;
 
@@ -13,7 +13,7 @@ class PostCommentController extends BaseController
 
     protected $postCommentRepository;
 
-    public function __construct(PostCommentRepositoryContract $postCommentRepository, PostRepositoryContract $postRepository)
+    public function __construct(PostCommentRepositoryContract $postCommentRepository, TaskRepositoryContract $postRepository)
     {
         $this->postCommentRepository = $postCommentRepository;
 

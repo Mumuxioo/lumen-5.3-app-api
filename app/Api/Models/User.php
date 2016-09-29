@@ -19,15 +19,15 @@ class User extends BaseModel implements AuthenticatableContract, JWTSubject
     protected $hidden = ['password','is_online','token'];
 
 
-    public function posts()
+    public function tasks()
     {
-        return $this->hasMany('Api\Models\Post');
+        return $this->hasMany('Api\Models\Task');
     }
 
-    public function postComments()
-    {
-        return $this->hasMany('Api\Models\PostComment');
-    }
+//    public function postComments()
+//    {
+//        return $this->hasMany('Api\Models\PostComment');
+//    }
 
     // jwt 需要实现的方法
     public function getJWTIdentifier()

@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use Api\Transformers\PostTransformer;
-use Api\Repositories\Contracts\PostRepositoryContract;
+use Api\Transformers\TaskTransformer;
+use Api\Repositories\Contracts\TaskRepositoryContract;
+use App\Http\ApiHelper;
 use Illuminate\Http\Request;
 
-class PostController extends BaseController
+class TaskController extends BaseController
 {
-    private $postRepository;
+    private $taskRepository;
 
-    public function __construct(PostRepositoryContract $postRepository)
+    public function __construct(TaskRepositoryContract $taskRepository)
     {
-        $this->postRepository = $postRepository;
+        $this->taskRepository = $taskRepository;
     }
 
     /**
-     * @api {get} /posts 帖子列表(post list)
-     * @apiDescription 帖子列表(post list)
-     * @apiGroup Post
+     * @api {get} /tasks 任务列表(task list)
+     * @apiDescription 任务列表(task list)  - 最新任务 热门推荐 猜我喜欢
+     * @apiGroup task
      * @apiPermission none
      * @apiParam {String='comments:limit(x)','user'} [include]  include
      * @apiVersion 0.1.0
@@ -65,15 +66,15 @@ class PostController extends BaseController
      */
     public function index()
     {
-        $posts = $this->postRepository->paginate();
+        $tasks = $this->taskRepository->paginate();
 
-        return $this->response->paginator($posts, new PostTransformer());
+        return $this->response->paginator($tasks, new TaskTransformer());
     }
 
     /**
-     * @api {get} /user/posts 我的帖子列表(my post list)
-     * @apiDescription 我的帖子列表(my post list)
-     * @apiGroup Post
+     * @api {get} /user/tasks 我的任务列表(my task list)
+     * @apiDescription 我的任务列表(my task list)
+     * @apiGroup task
      * @apiPermission none
      * @apiParam {String='comments:limit(x)'} [include]  include
      * @apiVersion 0.1.0
@@ -118,19 +119,19 @@ class PostController extends BaseController
      *     }
      *   }
      */
-    public function userIndex()
+    public function myTask()
     {
-        $posts = $this->postRepository
-            ->where(['user_id' => $this->user()->id])
+        $tasks = $this->taskRepository
+            ->where(['user_id' => $this->user()->user_id])
             ->paginate();
 
-        return $this->response->paginator($posts, new PostTransformer());
+        return $this->response->paginator($tasks, new TaskTransformer());
     }
 
     /**
-     * @api {get} /posts/{id} 帖子详情(post detail)
-     * @apiDescription 帖子详情(post detail)
-     * @apiGroup Post
+     * @api {get} /tasks/{id} 任务详情(task detail)
+     * @apiDescription 任务详情(task detail)
+     * @apiGroup task
      * @apiPermission none
      * @apiParam {String='comments','user'} [include]  include
      * @apiVersion 0.1.0
@@ -158,7 +159,7 @@ class PostController extends BaseController
      *         "data": [
      *           {
      *             "id": 1,
-     *             "post_id": 1,
+     *             "task_id": 1,
      *             "user_id": 1,
      *             "reply_user_id": 0,
      *             "content": "foobar",
@@ -172,24 +173,24 @@ class PostController extends BaseController
      *     }
      *   }
      */
-    public function show($id)
+    public function detail($id)
     {
-        $post = $this->postRepository->find($id);
+        $task = $this->taskRepository->find($id);
 
-        if (! $post) {
+        if (! $task) {
             return $this->response->errorNotFound();
         }
 
-        return $this->response->item($post, new PostTransformer());
+        return $this->response->item($task, new TaskTransformer());
     }
 
     /**
-     * @api {post} /posts 发布帖子(create post)
-     * @apiDescription 发布帖子(create post)
-     * @apiGroup Post
+     * @api {post} /tasks 发布任务(create task)
+     * @apiDescription 发布任务(create task)
+     * @apiGroup task
      * @apiPermission jwt
-     * @apiParam {String} title  post title
-     * @apiParam {String} content  post content
+     * @apiParam {String} title  task title
+     * @apiParam {String} content  task content
      * @apiVersion 0.1.0
      * @apiSuccessExample {json} Success-Response:
      *   HTTP/1.1 201 Created
@@ -197,45 +198,42 @@ class PostController extends BaseController
     public function store(Request $request)
     {
         $validator = \Validator::make($request->input(), [
-            'title' => 'required|string|max:50',
-            'content' => 'required|string',
+            'task_title' => 'required|string|max:50',
+            'task_content' => 'required|string',
         ]);
 
         if ($validator->fails()) {
-            return $this->errorBadRequest($validator->messages());
+            return  ApiHelper::toError($validator->messages());
         }
 
-        $attributes = $request->only('title', 'content');
-        $attributes['user_id'] = $this->user()->id;
-        $post = $this->postRepository->create($attributes);
+        $attributes = $request->only('task_title', 'task_content','task_type','completion_time','bounty_price','longitude','latitude');
+        $attributes['user_id'] = $this->user()->user_id;
+        $task = $this->taskRepository->create($attributes);
 
-        $location = dingo_route('v1', 'posts.show', $post->id);
-        // 协议里是这么返回，把资源位置放在header里面
-        // 也可以返回200加数据
-        return $this->response->created($location);
+       return ApiHelper::toJson(['taskId'=>$task->task_id],'发布成功');
     }
 
     /**
-     * @api {put} /posts/{id} 修改帖子(update post)
-     * @apiDescription 修改帖子(update post)
-     * @apiGroup Post
+     * @api {patch} /tasks/{id} 修改任务(update task)
+     * @apiDescription 修改任务(update task)
+     * @apiGroup task
      * @apiPermission jwt
-     * @apiParam {String} title  post title
-     * @apiParam {String} content  post content
+     * @apiParam {String} title  task title
+     * @apiParam {String} content  task content
      * @apiVersion 0.1.0
      * @apiSuccessExample {json} Success-Response:
      *   HTTP/1.1 204 NO CONTENT
      */
     public function update($id, Request $request)
     {
-        $post = $this->postRepository->find($id);
+        $task = $this->taskRepository->find($id);
 
-        if (! $post) {
+        if (! $task) {
             return $this->response->errorNotFound();
         }
 
         // 不属于我的forbidden
-        if ($post->user_id != $this->user()->id) {
+        if ($task->user_id != $this->user()->id) {
             return $this->response->errorForbidden();
         }
 
@@ -248,15 +246,15 @@ class PostController extends BaseController
             return $this->errorBadRequest($validator->messages());
         }
 
-        $this->postRepository->update($id, $request->only('title', 'content'));
+        $this->taskRepository->update($id, $request->only('title', 'content'));
 
         return $this->response->noContent();
     }
 
     /**
-     * @api {delete} /posts/{id} 删除帖子(delete post)
-     * @apiDescription 删除帖子(delete post)
-     * @apiGroup Post
+     * @api {delete} /tasks/{id} 删除任务(delete task)
+     * @apiDescription 删除任务(delete task)
+     * @apiGroup task
      * @apiPermission jwt
      * @apiVersion 0.1.0
      * @apiSuccessExample {json} Success-Response:
@@ -264,18 +262,18 @@ class PostController extends BaseController
      */
     public function destroy($id)
     {
-        $post = $this->postRepository->find($id);
+        $task = $this->taskRepository->find($id);
 
-        if (! $post) {
+        if (! $task) {
             return $this->response->errorNotFound();
         }
 
         // 不属于我的forbidden
-        if ($post->user_id != $this->user()->id) {
+        if ($task->user_id != $this->user()->id) {
             return $this->response->errorForbidden();
         }
 
-        $this->postRepository->destroy($id);
+        $this->taskRepository->destroy($id);
 
         return $this->response->noContent();
     }

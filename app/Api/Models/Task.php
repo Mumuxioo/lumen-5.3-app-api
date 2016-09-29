@@ -4,9 +4,13 @@ namespace Api\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Post extends BaseModel
+class Task extends BaseModel
 {
     use SoftDeletes;
+
+    protected $table = 'task_info';
+
+    protected $primaryKey = 'task_id';
 
     protected $casts = ['extra' => 'array'];
 
@@ -15,8 +19,8 @@ class Post extends BaseModel
         return $this->belongsTo('Api\Models\User');
     }
 
-    public function comments()
-    {
-        return $this->hasMany('Api\Models\PostComment');
-    }
+//    public function comments()
+//    {
+//        return $this->hasMany('Api\Models\PostComment');
+//    }
 }

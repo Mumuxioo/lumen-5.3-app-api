@@ -97,7 +97,7 @@ return [
     |
     */
     'attributes' => [],
-        
+
     // 补充
     'phone' => ':attribute 不是合法的手机号。',
 ];

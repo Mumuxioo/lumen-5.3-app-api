@@ -13,8 +13,8 @@ class RepositoryServiceProvider extends ServiceProvider
             \Api\Repositories\Eloquent\UserRepository::class
         );
         $this->app->bind(
-            \Api\Repositories\Contracts\PostRepositoryContract::class,
-            \Api\Repositories\Eloquent\PostRepository::class
+            \Api\Repositories\Contracts\TaskRepositoryContract::class,
+            \Api\Repositories\Eloquent\TaskRepository::class
         );
         $this->app->bind(
             \Api\Repositories\Contracts\PostCommentRepositoryContract::class,
