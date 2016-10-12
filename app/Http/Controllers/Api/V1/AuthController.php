@@ -35,14 +35,39 @@ class AuthController extends BaseController
      * @apiVersion 0.1.0
      * @apiSuccessExample {json} Success-Response:
      *     HTTP/1.1 200 OK
-     *    {
-     *      "status": "success",
-     *      "code": 200,
-     *      "message": "登陆成功",
-     *      "data": {
-     *       "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWwubHVtZW41LjMuY29tL2FwaS9hdXRob3JpemF0aW9uIiwiaWF0IjoxNDc0MDkwNTAwLCJleHAiOjE0NzQwOTQxMDAsIm5iZiI6MTQ3NDA5MDUwMCwianRpIjoiZTNmNzU0NjcwZjY3YmJmMjFiNjNkOTEwMTM5ZWE3YTQiLCJzdWIiOjZ9.gXZlIG7JOi2xX11fawLV6ID4WpTOdp5VKvwPfLFsHXU"
-     *           }
-     *     }
+     *   {
+            "status": "success",
+            "status_code": 200,
+            "message": "登陆成功",
+                "data": {
+                    "user": {
+                    "user_id": 1,
+                    "user_name": "",
+                    "user_nickname": "15201255173",
+                    "user_sex": null,
+                    "user_phone": "15201255173",
+                    "user_address": null,
+                    "user_avatar": null,
+                    "user_profession_type": null,
+                    "user_fans_num": null,
+                    "user_focus_num": 0,
+                    "user_blacklist_num": 0,
+                    "user_credits_num": 0,
+                    "user_charm_num": 0,
+                    "user_charm_ranking": 0,
+                    "user_credits_ranking": 0,
+                    "last_time": null,
+                    "id_cards": null,
+                    "education": 0,
+                    "car": 0,
+                    "real_name": 0,
+                    "created_at": "2016-09-28 21:53:51",
+                    "updated_at": "2016-09-28 21:53:51",
+                    "deleted_at": null
+                },
+                "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWwuYm91bnR5LmNvbS9hcGkvdXNlci9sb2dpbiIsImlhdCI6MTQ3NjI4NTcwMiwiZXhwIjoxNDc2Mjg5MzAyLCJuYmYiOjE0NzYyODU3MDIsImp0aSI6IjNlY2M0OTY4NjI3MjYyMDA1MTU1OGQ2ZjIzN2E2MzBhIiwic3ViIjoxfQ.Upr5bMUJeth0OMbPnPAuOoD1mgzWZ-XdQWYDM08GFCY"
+            }
+        }
      *
      * @apiErrorExample {json} Error-Response:
      *     HTTP/1.1 404 Not Found

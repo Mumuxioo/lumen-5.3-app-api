@@ -80,7 +80,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": " HTTP/1.1 200 OK\n{\n  \"status\": \"success\",\n  \"code\": 200,\n  \"message\": \"登陆成功\",\n  \"data\": {\n   \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWwubHVtZW41LjMuY29tL2FwaS9hdXRob3JpemF0aW9uIiwiaWF0IjoxNDc0MDkwNTAwLCJleHAiOjE0NzQwOTQxMDAsIm5iZiI6MTQ3NDA5MDUwMCwianRpIjoiZTNmNzU0NjcwZjY3YmJmMjFiNjNkOTEwMTM5ZWE3YTQiLCJzdWIiOjZ9.gXZlIG7JOi2xX11fawLV6ID4WpTOdp5VKvwPfLFsHXU\"\n       }\n }",
+          "content": "  HTTP/1.1 200 OK\n{\n          \"status\": \"success\",\n          \"status_code\": 200,\n          \"message\": \"登陆成功\",\n              \"data\": {\n                  \"user\": {\n                  \"user_id\": 1,\n                  \"user_name\": \"\",\n                  \"user_nickname\": \"15201255173\",\n                  \"user_sex\": null,\n                  \"user_phone\": \"15201255173\",\n                  \"user_address\": null,\n                  \"user_avatar\": null,\n                  \"user_profession_type\": null,\n                  \"user_fans_num\": null,\n                  \"user_focus_num\": 0,\n                  \"user_blacklist_num\": 0,\n                  \"user_credits_num\": 0,\n                  \"user_charm_num\": 0,\n                  \"user_charm_ranking\": 0,\n                  \"user_credits_ranking\": 0,\n                  \"last_time\": null,\n                  \"id_cards\": null,\n                  \"education\": 0,\n                  \"car\": 0,\n                  \"real_name\": 0,\n                  \"created_at\": \"2016-09-28 21:53:51\",\n                  \"updated_at\": \"2016-09-28 21:53:51\",\n                  \"deleted_at\": null\n              },\n              \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vbG9jYWwuYm91bnR5LmNvbS9hcGkvdXNlci9sb2dpbiIsImlhdCI6MTQ3NjI4NTcwMiwiZXhwIjoxNDc2Mjg5MzAyLCJuYmYiOjE0NzYyODU3MDIsImp0aSI6IjNlY2M0OTY4NjI3MjYyMDA1MTU1OGQ2ZjIzN2E2MzBhIiwic3ViIjoxfQ.Upr5bMUJeth0OMbPnPAuOoD1mgzWZ-XdQWYDM08GFCY\"\n          }\n      }",
           "type": "json"
         }
       ]
@@ -236,31 +236,6 @@
   },
   {
     "type": "delete",
-    "url": "/posts/{id}",
-    "title": "删除帖子(delete post)",
-    "description": "<p>删除帖子(delete post)</p>",
-    "group": "Post",
-    "permission": [
-      {
-        "name": "jwt"
-      }
-    ],
-    "version": "0.1.0",
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 204 NO CONTENT",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "./app/Http/Controllers/Api/V1/PostController.php",
-    "groupTitle": "Post",
-    "name": "DeletePostsId"
-  },
-  {
-    "type": "delete",
     "url": "/posts/{postId}/comments/{id}",
     "title": "删除评论(delete post comment)",
     "description": "<p>删除评论(delete post comment)</p>",
@@ -283,90 +258,6 @@
     "filename": "./app/Http/Controllers/Api/V1/PostCommentController.php",
     "groupTitle": "Post",
     "name": "DeletePostsPostidCommentsId"
-  },
-  {
-    "type": "get",
-    "url": "/posts",
-    "title": "帖子列表(post list)",
-    "description": "<p>帖子列表(post list)</p>",
-    "group": "Post",
-    "permission": [
-      {
-        "name": "none"
-      }
-    ],
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "allowedValues": [
-              "'comments:limit(x)'",
-              "'user'"
-            ],
-            "optional": true,
-            "field": "include",
-            "description": "<p>include</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.1.0",
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"user_id\": 3,\n      \"title\": \"foo\",\n      \"content\": \"\",\n      \"created_at\": \"2016-03-30 15:36:30\",\n      \"user\": {\n        \"data\": {\n          \"id\": 3,\n          \"email\": \"foo@bar.com1\",\n          \"name\": \"\",\n          \"avatar\": \"\",\n          \"created_at\": \"2016-03-30 15:34:01\",\n          \"updated_at\": \"2016-03-30 15:34:01\",\n          \"deleted_at\": null\n        }\n      },\n      \"comments\": {\n        \"data\": [],\n        \"meta\": {\n          \"total\": 0\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"pagination\": {\n      \"total\": 2,\n      \"count\": 2,\n      \"per_page\": 15,\n      \"current_page\": 1,\n      \"total_pages\": 1,\n      \"links\": []\n    }\n  }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "./app/Http/Controllers/Api/V1/PostController.php",
-    "groupTitle": "Post",
-    "name": "GetPosts"
-  },
-  {
-    "type": "get",
-    "url": "/posts/{id}",
-    "title": "帖子详情(post detail)",
-    "description": "<p>帖子详情(post detail)</p>",
-    "group": "Post",
-    "permission": [
-      {
-        "name": "none"
-      }
-    ],
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "allowedValues": [
-              "'comments'",
-              "'user'"
-            ],
-            "optional": true,
-            "field": "include",
-            "description": "<p>include</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.1.0",
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"data\": {\n    \"id\": 1,\n    \"user_id\": 3,\n    \"title\": \"foo\",\n    \"content\": \"\",\n    \"created_at\": \"2016-03-30 15:36:30\",\n    \"user\": {\n      \"data\": {\n        \"id\": 3,\n        \"email\": \"foo@bar.com1\",\n        \"name\": \"\",\n        \"avatar\": \"\",\n        \"created_at\": \"2016-03-30 15:34:01\",\n        \"updated_at\": \"2016-03-30 15:34:01\",\n        \"deleted_at\": null\n      }\n    },\n    \"comments\": {\n      \"data\": [\n        {\n          \"id\": 1,\n          \"post_id\": 1,\n          \"user_id\": 1,\n          \"reply_user_id\": 0,\n          \"content\": \"foobar\",\n          \"created_at\": \"2016-04-06 14:51:34\"\n        }\n      ],\n      \"meta\": {\n        \"total\": 1\n      }\n    }\n  }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "./app/Http/Controllers/Api/V1/PostController.php",
-    "groupTitle": "Post",
-    "name": "GetPostsId"
   },
   {
     "type": "get",
@@ -410,92 +301,6 @@
     "name": "GetPostsPostidComments"
   },
   {
-    "type": "get",
-    "url": "/user/posts",
-    "title": "我的帖子列表(my post list)",
-    "description": "<p>我的帖子列表(my post list)</p>",
-    "group": "Post",
-    "permission": [
-      {
-        "name": "none"
-      }
-    ],
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "allowedValues": [
-              "'comments:limit(x)'"
-            ],
-            "optional": true,
-            "field": "include",
-            "description": "<p>include</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.1.0",
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"user_id\": 3,\n      \"title\": \"foo\",\n      \"content\": \"\",\n      \"created_at\": \"2016-03-30 15:36:30\",\n      \"user\": {\n        \"data\": {\n          \"id\": 3,\n          \"email\": \"foo@bar.com1\",\n          \"name\": \"\",\n          \"avatar\": \"\",\n          \"created_at\": \"2016-03-30 15:34:01\",\n          \"updated_at\": \"2016-03-30 15:34:01\",\n          \"deleted_at\": null\n        }\n      },\n      \"comments\": {\n        \"data\": [],\n        \"meta\": {\n          \"total\": 0\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"pagination\": {\n      \"total\": 2,\n      \"count\": 2,\n      \"per_page\": 15,\n      \"current_page\": 1,\n      \"total_pages\": 1,\n      \"links\": []\n    }\n  }\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "./app/Http/Controllers/Api/V1/PostController.php",
-    "groupTitle": "Post",
-    "name": "GetUserPosts"
-  },
-  {
-    "type": "post",
-    "url": "/posts",
-    "title": "发布帖子(create post)",
-    "description": "<p>发布帖子(create post)</p>",
-    "group": "Post",
-    "permission": [
-      {
-        "name": "jwt"
-      }
-    ],
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "title",
-            "description": "<p>post title</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "content",
-            "description": "<p>post content</p>"
-          }
-        ]
-      }
-    },
-    "version": "0.1.0",
-    "success": {
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "HTTP/1.1 201 Created",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "./app/Http/Controllers/Api/V1/PostController.php",
-    "groupTitle": "Post",
-    "name": "PostPosts"
-  },
-  {
     "type": "post",
     "url": "/posts/{postId}/comments",
     "title": "发布评论(create post comment)",
@@ -534,11 +339,161 @@
     "name": "PostPostsPostidComments"
   },
   {
-    "type": "put",
-    "url": "/posts/{id}",
-    "title": "修改帖子(update post)",
-    "description": "<p>修改帖子(update post)</p>",
-    "group": "Post",
+    "type": "delete",
+    "url": "/tasks/{id}",
+    "title": "删除任务(delete task)",
+    "description": "<p>删除任务(delete task)</p>",
+    "group": "task",
+    "permission": [
+      {
+        "name": "jwt"
+      }
+    ],
+    "version": "0.1.0",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 204 NO CONTENT",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "./app/Http/Controllers/Api/V1/TaskController.php",
+    "groupTitle": "task",
+    "name": "DeleteTasksId"
+  },
+  {
+    "type": "get",
+    "url": "/tasks",
+    "title": "任务列表(task list)",
+    "description": "<p>任务列表(task list)  - 最新任务 热门推荐 猜我喜欢</p>",
+    "group": "task",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "allowedValues": [
+              "'comments:limit(x)'",
+              "'user'"
+            ],
+            "optional": true,
+            "field": "include",
+            "description": "<p>include</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"user_id\": 3,\n      \"title\": \"foo\",\n      \"content\": \"\",\n      \"created_at\": \"2016-03-30 15:36:30\",\n      \"user\": {\n        \"data\": {\n          \"id\": 3,\n          \"email\": \"foo@bar.com1\",\n          \"name\": \"\",\n          \"avatar\": \"\",\n          \"created_at\": \"2016-03-30 15:34:01\",\n          \"updated_at\": \"2016-03-30 15:34:01\",\n          \"deleted_at\": null\n        }\n      },\n      \"comments\": {\n        \"data\": [],\n        \"meta\": {\n          \"total\": 0\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"pagination\": {\n      \"total\": 2,\n      \"count\": 2,\n      \"per_page\": 15,\n      \"current_page\": 1,\n      \"total_pages\": 1,\n      \"links\": []\n    }\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "./app/Http/Controllers/Api/V1/TaskController.php",
+    "groupTitle": "task",
+    "name": "GetTasks"
+  },
+  {
+    "type": "get",
+    "url": "/tasks/{id}",
+    "title": "任务详情(task detail)",
+    "description": "<p>任务详情(task detail)</p>",
+    "group": "task",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "allowedValues": [
+              "'comments'",
+              "'user'"
+            ],
+            "optional": true,
+            "field": "include",
+            "description": "<p>include</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"data\": {\n    \"id\": 1,\n    \"user_id\": 3,\n    \"title\": \"foo\",\n    \"content\": \"\",\n    \"created_at\": \"2016-03-30 15:36:30\",\n    \"user\": {\n      \"data\": {\n        \"id\": 3,\n        \"email\": \"foo@bar.com1\",\n        \"name\": \"\",\n        \"avatar\": \"\",\n        \"created_at\": \"2016-03-30 15:34:01\",\n        \"updated_at\": \"2016-03-30 15:34:01\",\n        \"deleted_at\": null\n      }\n    },\n    \"comments\": {\n      \"data\": [\n        {\n          \"id\": 1,\n          \"task_id\": 1,\n          \"user_id\": 1,\n          \"reply_user_id\": 0,\n          \"content\": \"foobar\",\n          \"created_at\": \"2016-04-06 14:51:34\"\n        }\n      ],\n      \"meta\": {\n        \"total\": 1\n      }\n    }\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "./app/Http/Controllers/Api/V1/TaskController.php",
+    "groupTitle": "task",
+    "name": "GetTasksId"
+  },
+  {
+    "type": "get",
+    "url": "/user/tasks",
+    "title": "我的任务列表(my task list)",
+    "description": "<p>我的任务列表(my task list)</p>",
+    "group": "task",
+    "permission": [
+      {
+        "name": "none"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "allowedValues": [
+              "'comments:limit(x)'"
+            ],
+            "optional": true,
+            "field": "include",
+            "description": "<p>include</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"data\": [\n    {\n      \"id\": 1,\n      \"user_id\": 3,\n      \"title\": \"foo\",\n      \"content\": \"\",\n      \"created_at\": \"2016-03-30 15:36:30\",\n      \"user\": {\n        \"data\": {\n          \"id\": 3,\n          \"email\": \"foo@bar.com1\",\n          \"name\": \"\",\n          \"avatar\": \"\",\n          \"created_at\": \"2016-03-30 15:34:01\",\n          \"updated_at\": \"2016-03-30 15:34:01\",\n          \"deleted_at\": null\n        }\n      },\n      \"comments\": {\n        \"data\": [],\n        \"meta\": {\n          \"total\": 0\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"pagination\": {\n      \"total\": 2,\n      \"count\": 2,\n      \"per_page\": 15,\n      \"current_page\": 1,\n      \"total_pages\": 1,\n      \"links\": []\n    }\n  }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "./app/Http/Controllers/Api/V1/TaskController.php",
+    "groupTitle": "task",
+    "name": "GetUserTasks"
+  },
+  {
+    "type": "patch",
+    "url": "/tasks/{id}",
+    "title": "修改任务(update task)",
+    "description": "<p>修改任务(update task)</p>",
+    "group": "task",
     "permission": [
       {
         "name": "jwt"
@@ -552,14 +507,14 @@
             "type": "String",
             "optional": false,
             "field": "title",
-            "description": "<p>post title</p>"
+            "description": "<p>task title</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "content",
-            "description": "<p>post content</p>"
+            "description": "<p>task content</p>"
           }
         ]
       }
@@ -574,9 +529,54 @@
         }
       ]
     },
-    "filename": "./app/Http/Controllers/Api/V1/PostController.php",
-    "groupTitle": "Post",
-    "name": "PutPostsId"
+    "filename": "./app/Http/Controllers/Api/V1/TaskController.php",
+    "groupTitle": "task",
+    "name": "PatchTasksId"
+  },
+  {
+    "type": "post",
+    "url": "/tasks",
+    "title": "发布任务(create task)",
+    "description": "<p>发布任务(create task)</p>",
+    "group": "task",
+    "permission": [
+      {
+        "name": "jwt"
+      }
+    ],
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "title",
+            "description": "<p>task title</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "content",
+            "description": "<p>task content</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.1.0",
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 201 Created",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "./app/Http/Controllers/Api/V1/TaskController.php",
+    "groupTitle": "task",
+    "name": "PostTasks"
   },
   {
     "type": "get",
@@ -667,7 +667,7 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "HTTP/1.1 200 OK\n        {\n            \"status\": \"success\",\n            \"status_code\": 200,\n            \"message\": \"\",\n            \"data\": {\n                \"user_id\": 7,\n                \"user_name\": \"tony1\",\n                \"user_nickname\": \"\",\n                \"user_sex\": \"1\",\n                \"user_phone\": \"\",\n                \"user_address\": null,\n                \"user_profession_type\": null,\n                \"user_fans_num\": null,\n                \"user_focus_num\": 0,\n                \"user_blacklist_num\": 0,\n                \"user_credits_num\": 0,\n                \"user_charm_num\": 0,\n                \"user_charm_ranking\": 0,\n                \"user_credits_ranking\": 0,\n                \"last_time\": null,\n                \"created_at\": \"2016-09-24 09:54:26\",\n                \"updated_at\": \"2016-09-25 18:24:16\",\n                \"deleted_at\": null\n            }\n        }",
+          "content": "    HTTP/1.1 200 OK\n{\n\"status\": \"success\",\n\"status_code\": 200,\n\"message\": \"\",\n\"data\": {\n\"user_id\": 7,\n\"user_name\": \"tony1\",\n\"user_nickname\": \"\",\n\"user_sex\": \"1\",\n\"user_phone\": \"\",\n\"user_address\": null,\n\"user_profession_type\": null,\n\"user_fans_num\": null,\n\"user_focus_num\": 0,\n\"user_blacklist_num\": 0,\n\"user_credits_num\": 0,\n\"user_charm_num\": 0,\n\"user_charm_ranking\": 0,\n\"user_credits_ranking\": 0,\n\"last_time\": null,\n\"created_at\": \"2016-09-24 09:54:26\",\n\"updated_at\": \"2016-09-25 18:24:16\",\n\"deleted_at\": null\n}\n}",
           "type": "json"
         }
       ]
@@ -675,6 +675,60 @@
     "filename": "./app/Http/Controllers/Api/V1/UserController.php",
     "groupTitle": "user",
     "name": "PatchUser"
+  },
+  {
+    "type": "post",
+    "url": "/user/avatar",
+    "title": "修改个人头像(upload my avatar)",
+    "description": "<p>修改个人头像(upload my avatar)</p>",
+    "group": "user",
+    "permission": [
+      {
+        "name": "JWT"
+      }
+    ],
+    "version": "0.1.0",
+    "parameter": {
+      "fields": {
+        "参数1": [
+          {
+            "group": "参数1",
+            "type": "file",
+            "optional": false,
+            "field": "avatar",
+            "description": "<p>头像图片文件</p>"
+          },
+          {
+            "group": "参数1",
+            "type": "String",
+            "optional": false,
+            "field": "token",
+            "description": "<p>token</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "    HTTP/1.1 200 OK\n{\n \"status\": \"success\",\n \"status_code\": 200,\n \"message\": \"上传头像成功\",\n \"data\": {\n \"avatar_url\": \"uploads/avatar/2016-09-267bb5938e78cc8b6cd438be83cc8d78d1.jpg\"\n }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "  HTTP/1.1 403 Bad Request\n {\n   \"status\": \"error\",\n   \"status_code\": 403,\n   \"message\": {\n       \"上传图片不存在\"\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "./app/Http/Controllers/Api/V1/UserController.php",
+    "groupTitle": "user",
+    "name": "PostUserAvatar"
   },
   {
     "type": "put",

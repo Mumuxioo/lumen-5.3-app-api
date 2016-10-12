@@ -181,7 +181,9 @@ class UserController extends BaseController
      * @apiGroup user
      * @apiPermission JWT
      * @apiVersion 0.1.0
-     * @apiParam {file} [avatar] 头像图片文件
+     *
+     * @apiParam  {file} avatar 头像图片文件
+     * @apiParam  {String} token token
      *
      * @apiSuccessExample {json} Success-Response:
      *     HTTP/1.1 200 OK
