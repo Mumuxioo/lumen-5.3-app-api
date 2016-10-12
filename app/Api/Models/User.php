@@ -16,7 +16,7 @@ class User extends BaseModel implements AuthenticatableContract, JWTSubject
     protected $primaryKey = 'user_id';
 
     // 查询用户的时候，不暴露密码
-    protected $hidden = ['password','is_online','token'];
+    protected $hidden = ['password'];
 
 
     public function tasks()

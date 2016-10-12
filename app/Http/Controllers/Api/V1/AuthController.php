@@ -85,10 +85,9 @@ class AuthController extends BaseController
         }catch (JWTException $e) {
             return ApiHelper::toError('token创建失败');
         }
-//        $phone = $request->get('user_phone');
-//        $user = $this->userRepository->where(['user_phone'=>$phone])->first();
-//        dd($user);
-        return ApiHelper::toJson(compact('token'),'登陆成功');
+        $phone = $request->get('user_phone');
+        $user = $this->userRepository->where(['user_phone'=>$phone])->first();
+        return ApiHelper::toJson(compact('user','token'),'登陆成功');
     }
 
     /**
